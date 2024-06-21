@@ -1,4 +1,4 @@
-name: CI/CD for Dockerized App to Kubernetes
+name: CI/CD Pipeline
 
 on:
   push:
@@ -6,43 +6,46 @@ on:
       - main
 
 jobs:
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          username: ${{ secrets.meeramohan323}}
+          username: ${{ secrets.meeramohan323 }}
           password: ${{ secrets.Meeradocker1}}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
-          tags: meeramohan323/wisecow:latest
+          tags: ${{ secrets.meeramohan323 }}/wisecow:latest
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build-and-push
+    needs: build
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v1
         with:
-          version: 'latest'
+          version: v1.18.0
 
       - name: Deploy to Kubernetes
         env:
-          KUBECONFIG: ${{ secrets.KUBECONFIG }}
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          kubectl apply -f k8s-wisecow.yaml
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ./kubeconfig
+          kubectl --kubeconfig=./kubeconfig apply -f k8s/deployment.yaml
+          kubectl --kubeconfig=./kubeconfig apply -f k8s/service.yaml
