@@ -44,4 +44,5 @@ main() {
 }
 #testcomment
 #test1
+#test2
 main
