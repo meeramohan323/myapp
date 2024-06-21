@@ -29,23 +29,4 @@ jobs:
           push: true
           tags: ${{ secrets.meeramohan323 }}/wisecow:latest
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          version: v1.18.0
-
-      - name: Deploy to Kubernetes
-        env:
-          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > ./kubeconfig
-          kubectl --kubeconfig=./kubeconfig apply -f k8s/deployment.yaml
-          kubectl --kubeconfig=./kubeconfig apply -f k8s/service.yaml
+    
