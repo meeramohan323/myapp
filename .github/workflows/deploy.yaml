@@ -21,7 +21,7 @@ jobs:
 
       - name: Authenticate with Google Cloud
         run: |
-          gcloud auth activate-service-account --key-file=key.json
+          gcloud auth activate-service-account --key-file=pure-spirit-123456-m1-fd59056e7509.json
           gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-west2 --pure-spirit-123456-m1
 
       - name: Deploy to Kubernetes
