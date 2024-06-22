@@ -13,23 +13,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Cloud SDK
-      uses: google-github-actions/setup-gcloud@master
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
       with:
-        project_id: pure-spirit-123456-m1
-        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        version: 'latest'
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.pure-spirit-123456-m1}}
 
-    - name: Configure Docker
-      run: gcloud auth configure-docker
-
-    - name: Build and push Docker image
+    - name: Configure kubectl
       run: |
-        docker build -t gcr.io/ pure-spirit-123456-m1/wisecow:latest .
-        docker push gcr.io /pure-spirit-123456-m1/wisecow:latest
-
-    - name: Set up Kubernetes context
-      run: |
-        gcloud container clusters get-credentials wisecow-cluster --zone us-central1-a
+        echo $GCP_SA_KEY | base64 --decode > $HOME/gcloud-key.json
+        gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
+        gcloud container clusters get-credentials my-cluster --zone us-central1-a --project ${{ secrets.GCP_PROJECT_ID }}
         kubectl config view
 
     - name: Deploy to GKE
