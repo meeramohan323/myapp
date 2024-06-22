@@ -1,0 +1,8 @@
+steps:
+  - name: Set up gcloud CLI
+    uses: google-github-actions/setup-gcloud@v3
+    with:
+      project_id: pure-spirit-123456-m1
+      service_account_key: ${{ secrets.GCP_SA_KEY }}
+      export_default_credentials: true
+  # Additional steps in your workflow
