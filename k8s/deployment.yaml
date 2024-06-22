@@ -12,30 +12,10 @@ spec:
       labels:
         app: wisecow
     spec:
+      imagePullSecrets:
+      - name: regcred
       containers:
       - name: wisecow
-        image: ghcr.io/meeramohan323/wisecow:latest
+        image: meeramohan323/wisecow:latest
         ports:
         - containerPort: 80
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "250m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-        env:
-          - name: NODE_ENV
-            value: "production"
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 80
-          initialDelaySeconds: 15
-          periodSeconds: 20
