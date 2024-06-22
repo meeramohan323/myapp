@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
       - name: wisecow
-        image: gcr.io/pure-spirit-123456-m1/wisecow:latest
+        image: meeramohan323/wisecow:latest
         ports:
-        - containerPort: 3000
+        - containerPort: 80
