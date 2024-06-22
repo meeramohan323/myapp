@@ -1,4 +1,4 @@
-name: Deploy to Kubernetes
+name: Deploy to GKE
 
 on:
   push:
@@ -10,20 +10,29 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Kubeconfig
-        run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 --decode > $HOME/.kube/config
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: pure-spirit-123456-m1
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
 
-      - name: Install kubectl
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y kubectl
+    - name: Configure Docker
+      run: gcloud auth configure-docker
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/deployment.yaml 
-          kubectl apply -f k8s/service.yaml 
+    - name: Build and push Docker image
+      run: |
+        docker build -t gcr.io/ pure-spirit-123456-m1/wisecow:latest .
+        docker push gcr.io /pure-spirit-123456-m1/wisecow:latest
+
+    - name: Set up Kubernetes context
+      run: |
+        gcloud container clusters get-credentials wisecow-cluster --zone us-central1-a
+        kubectl config view
+
+    - name: Deploy to GKE
+      run: |
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
