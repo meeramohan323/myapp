@@ -1,3 +1,4 @@
+
 name: Deploy to GKE
 
 on:
@@ -8,6 +9,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -15,17 +17,14 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v1
       with:
-        version: 'latest'
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: pure-spirit-123456
 
-    - name: Authenticate to Google Cloud
+    - name: Get GKE credentials
       run: |
-        echo "${{ secrets.GCP_SA_KEY }}" | base64 --decode > $HOME/gcloud-key.json
+        echo $GCP_SA_KEY | base64 --decode > $HOME/gcloud-key.json
         gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
-
-    - name: Configure kubectl
-      run: |
         gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-west2 --project pure-spirit-123456
-        kubectl config view
 
     - name: Deploy to GKE
       run: |
