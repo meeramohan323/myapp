@@ -18,7 +18,7 @@ jobs:
       with:
         version: 'latest'
         service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: ${{ secrets.pure-spirit-123456-m1}}
+        project_id: ${{ secrets.GCP_PROJECT_ID}}
 
     - name: Configure kubectl
       run: |
