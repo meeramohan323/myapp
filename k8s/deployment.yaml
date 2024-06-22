@@ -12,10 +12,8 @@ spec:
       labels:
         app: wisecow
     spec:
-      imagePullSecrets:
-      - name: regcred
       containers:
       - name: wisecow
-        image: ghcr.io/meeramohan323/wisecow:latest
+        image: gcr.io/pure-spirit-123456-m1/wisecow:latest
         ports:
         - containerPort: 3000
