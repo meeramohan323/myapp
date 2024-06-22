@@ -22,7 +22,7 @@ jobs:
 
     - name: Get GKE credentials
       run: |
-        echo $GCP_SA_KEY | base64 --decode > $HOME/gcloud-key.json
+        echo $GCP_SA_KEY | base64 --decode > /home/runner/gcloud-key.json
         gcloud auth activate-service-account --key-file=$HOME/gcloud-key.json
         gcloud container clusters get-credentials autopilot-cluster-1 --zone europe-west2 --project pure-spirit-123456
 
